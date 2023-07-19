@@ -1,0 +1,210 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="About me">
+   <div class="container">
+      <h1>About me</h1>
+      <p>
+         My name is Mikael Lofjärd, and I'm a <s>29</s> <s>30</s> 40+ year old software
+         developer/architect working at 11K. I currently live
+         outside of Stockholm, Sweden with my wife and two daughters.
+      </p>
+
+      <h2>The past</h2>
+      <p>
+         I grew up in the town of Varberg, on the west coast of Sweden. Here I
+         got my first taste of programming at the age of 10 (well technically I
+         was about to turn eleven in a few months) when I managed to get my
+         hands on a copy of the freshly released Visual Basic 3.0. I was
+         completely amazed with the fact that I could now create my own Windows
+         programs. Without any internet or books at hand I tried to make due
+         with trial and error but, suffice to say, my programs never really did
+         anything advanced. They where however my own creations and as such I
+         was immensely proud of them.
+      </p>
+      <p>
+         A few years later, a few of my friends had gotten their first dialup
+         internet connections and I started taking an interest in how to make
+         websites, even though I had no internet connection of my own yet.
+      </p>
+      <p>
+         My programming interest really grew into a full time obsession when I
+         started high school (school year 10-12 in Sweden) since, for the first
+         time, I got to select for myself what I wanted to study and thus ended
+         up hanging out with a bunch of like-minded people. From there on out
+         its been an amazing journey of discovery and learning.
+      </p>
+
+      <h2>The (somewhat) present</h2>
+      <p>
+         I had my go at college but it turned out it wasn't for me. I made a lot
+         of really great friends and I enjoyed all the programming courses, but
+         I somehow felt that all the math and technical engineering courses
+         didn't really bring anything to the table that I would have any use for
+         in my future profession. Thus I dropped out after just two years.
+      </p>
+
+      <p>
+         Now I'm not saying that you shouldn't go to college. Education is very
+         important when looking for a job these days. What I'm trying to say is
+         that I found that most of my required courses didn't interest me, and
+         when I'm not interested in what I'm trying to learn it doesn't matter
+         how much I study because I'm never going to get it anyway.
+      </p>
+
+      <p>
+         It turns out that it was the right decision for me, because in my now 8
+         years of working as a programmer I have only used ONE thing I learned
+         in college and even that wasn't really critical to the task I was
+         doing.
+      </p>
+
+      <p>
+         I currently work as a software architect/developer at a small
+         consulting business in Solna, Sweden and it's a job that I really
+         enjoy.
+      </p>
+
+      <h2>The future</h2>
+      <p>
+         I tend not to think about the future to much, and I'm currently very
+         happy with where I am in life, but you always need something to aspire
+         to and so I shall at least try to explain what I want from life.
+      </p>
+
+      <p>
+         Regarding my personal life; we've been thinking about getting a house
+         for a while, but at the moment we're thinking about maybe saving up
+         some money and move to the west coast (to be closer to my relatives) in
+         5-10 years. Somehow that plan always seems to change from week to week.
+      </p>
+
+      <p>
+         Professionally, I couldn't be happier about where I work or the people
+         I work with, but one can never know what the future holds.
+      </p>
+
+      <p>
+         If I was to work someplace else the most important thing for me would
+         be the people I work with. I may aspire to be the best in my field, but
+         if I don't work with people who are better than me then I'm not
+         interested.
+      </p>
+
+      <blockquote>
+         The moment you think you know something is the moment you stop learning<cite
+            >Someone smarter than me</cite
+         >
+      </blockquote>
+      <p>
+         I'm not sure who said that but I strongly agree with it. I can learn a
+         lot from reading blogs and technical articles (and I do) but learning
+         something without discussing the meaning of it with people who you look
+         up to, doesn't really amount to much in my opinion.
+      </p>
+   </div>
+</Layout>
+
+<style lang="scss">
+   .container {
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      padding: 0;
+      gap: 0rem;
+      container-type: inline-size;
+
+      background: rgba(40, 40, 40, 0.8);
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      padding: 3.2rem 3.2rem 4rem 3.2rem;
+      border-radius: 1.6rem;
+      color: rgb(225, 225, 225);
+      line-height: 1.6;
+      font-size: 1.6rem;
+      margin-top: 2.4rem;
+
+      > *:first-child {
+         margin-top: 0;
+      }
+
+      h1 {
+         font-family: "Oswald", sans-serif;
+         font-size: 3.2rem;
+         color: rgb(205, 205, 205);
+         text-transform: uppercase;
+         margin-top: 3.2rem;
+         margin-bottom: 1.6rem;
+         line-height: 1;
+
+         &::first-letter {
+            font-size: 120%;
+         }
+      }
+
+      h2 {
+         font-family: "Oswald", sans-serif;
+         font-size: 2.4rem;
+         color: rgb(205, 205, 205);
+         text-transform: uppercase;
+         margin-top: 3.2rem;
+         margin-bottom: 1.6rem;
+         line-height: 1;
+
+         &::first-letter {
+            font-size: 120%;
+         }
+      }
+
+      p {
+         margin-top: 0.8rem;
+      }
+
+      blockquote {
+         border: 0.1rem solid rgba(80,80,80,0.8);
+         border-radius: 0.8rem;
+         font-family: "Open Sans", sans-serif;
+         font-weight: 400;
+         font-size: 1.6rem;
+         font-style: italic;
+         background: rgba(80,80,80,0.2);
+         display: block;
+         padding: 1.6rem 1.6rem 1.6rem 8rem;
+         margin: 2.4rem auto 2.4rem auto;
+         max-width: 55rem;
+         position: relative;
+         quotes: '"' '\00BB' '\201E' '\201C';
+
+         &::before {
+            font-family: "Fira Code", sans-serif;
+            font-weight: 400;
+            display: block;
+            content: open-quote;
+            font-size: 12rem;
+            line-height: 1;
+            position: absolute;
+            left: -1.6rem;
+            top: -2.4rem;
+            color: #dadfce;
+         }
+
+         &::after {
+            content: no-close-quote;
+         }
+
+         cite {
+            font-family: "Open Sans", sans-serif;
+            font-weight: 400;
+            font-style: italic;
+            color: rgb(140,140,140);
+            font-size: 1.4rem;
+            display: block;
+            margin-top: .8rem;
+
+            &::before {
+               content: "\2014 \2009";
+            }
+         }
+      }
+   }
+</style>

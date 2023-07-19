@@ -1,0 +1,251 @@
+---
+import TopMenu from "../components/TopMenu.astro";
+import "../styles/reset.css";
+
+export interface Props {
+   title?: string;
+}
+
+const { title } = Astro.props;
+
+const mainTitle = "Mikael's blog";
+const subTitle = "A developers seventh time trying to maintain a blog";
+
+const pageTitle = title ? `${title} - ${mainTitle}` : `${mainTitle} - ${subTitle}`;
+---
+
+<script>
+   const dialog = document.querySelector("#share-dialog") as HTMLDialogElement;
+   const closeButton = dialog.querySelector("#close") as HTMLButtonElement;
+   const copyButton = dialog.querySelector("#copy") as HTMLButtonElement;
+
+   const close = (e: MouseEvent) => {
+      e.preventDefault();
+      dialog.close();
+   };
+
+   const copy = (e: MouseEvent) => {
+      e.preventDefault();
+      const url = dialog.querySelector("code")!.innerHTML;
+      navigator.clipboard.writeText(url).then(
+         () => {
+            dialog.close();
+         },
+         () => {
+            console.error("Could not copy URL to clipboard.", url);
+         }
+      );
+   };
+
+   closeButton.addEventListener('click', close);
+   copyButton.addEventListener('click', copy);
+</script>
+
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="description" content="Astro description" />
+      <meta name="viewport" content="width=414, shrink-to-fit=yes, initial-scale=1" />
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <meta name="generator" content={Astro.generator} />
+      <title>{pageTitle}</title>
+   </head>
+   <body>
+      <div class="container">
+         <header>
+            <h2><a href="/">{mainTitle}</a></h2>
+            <h3>{subTitle}</h3>
+         </header>
+         <TopMenu />
+         <div class="content"><slot /></div>
+         <footer>
+            <div class="copy">
+               <a href="/admin">&#169; 2022 Mikael Lofj&auml;rd</a>
+            </div>
+         </footer>
+      </div>
+      <dialog id="share-dialog">
+         <p>Sorry, sharing is not available as a feature in your browser.</p>
+         <p>You can share the link to the page if you want!</p>
+         <code>URL</code>
+         <div class="buttons">
+            <button id="copy">Copy to clipboard</button><button id="close">Close</button>
+         </div>
+      </dialog>
+   </body>
+</html>
+
+<style lang="scss">
+   @import "../styles/variables.scss";
+
+   body {
+      background: radial-gradient(
+            circle at top left,
+            rgba(0, 255, 255, 0.3) 0%,
+            transparent 60%
+         ),
+         radial-gradient(
+            circle at bottom right,
+            rgba(255, 0, 255, 0.2) 0%,
+            transparent 60%
+         ),
+         radial-gradient(circle, #aaa, #222);
+      background-attachment: fixed;
+      font-family: "Open Sans", sans-serif;
+      font-weight: 400;
+   }
+
+   .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+   }
+
+   header {
+      position: relative;
+      //background-color: $color-dark;
+      background: rgba(40, 40, 40, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 2;
+      text-transform: uppercase;
+      text-align: center;
+      width: 100%;
+      z-index: 0;
+
+      > h2 {
+         font-size: 3.2rem;
+         font-family: "Oswald";
+         font-weight: 400;
+         line-height: 1.5;
+         filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      
+         > a {
+            color: rgb(205,205,205);
+
+            text-decoration: none;
+            
+            &:hover {
+               text-decoration: underline;
+            }
+         }
+
+         &::first-letter {
+            font-size: 120%;
+         }
+      }
+
+      > h3 {
+         color: rgb(225,225,225);
+         font-size: 0.8rem;
+         font-family: "Open Sans";
+         line-height: 1.5;
+         font-weight: 400;
+         margin-bottom: .8rem;
+         filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      
+         &::first-letter {
+            font-size: 120%;
+         }
+      }
+   }
+   
+   footer {
+      background: rgba(40, 40, 40, 0.4);
+//box-shadow: 0 -20px 16px 20px rgba(0, 0, 0, 0.3), 0 0 20px 20px $color-white;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: end;
+      width: 100%;
+
+      .copy > a {
+         color: rgb(225,225,225);
+         font-size: 1.0rem;
+         font-family: "Open Sans";
+         line-height: 2;
+         font-weight: 400;
+         text-transform: uppercase;
+         padding-right: 1.2rem;
+         text-decoration: none;
+      }
+   }
+
+   .content {
+      padding: 0 0 1.6rem 0;
+      max-width: 120rem;
+      flex: 1;
+      width: calc(100% - 8rem);
+   }
+
+   dialog {
+      padding: 2.4rem 2.4rem 3.2rem 2.4rem;
+      font-size: 1.6rem;
+      color: rgb(225, 225, 225);
+      background-color: rgba(40, 40, 40, 1);
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      border: none;
+      border-radius: 1.6rem;
+      text-align: center;
+
+      code {
+         padding: 0.4rem;
+         border: 1px solid rgb(180, 180, 180);
+         font-family: "Fira Code";
+         font-weight: 400;
+         background: rgb(80, 80, 80);
+         display: block;
+         margin-bottom: 2.4rem;
+         margin-top: 1.6rem;
+         word-break: break-all;
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: .8rem;
+        justify-content: center;
+      }
+
+      button {
+         background: rgb(205, 205, 205);
+         color: rgb(40, 40, 40);
+         border: none;
+         padding: 0.8rem 2.4rem;
+         border-radius: 1.6rem;
+         font-family: "Oswald", sans-serif;
+         font-size: 1.6rem;
+
+         &:hover,
+         &:focus {
+            background: rgb(225, 225, 225);
+         }
+      }
+
+      &::backdrop {
+         background-color: rgba(0, 0, 0, 0.6);
+      }
+
+      p {
+         margin-bottom: 0.8rem;
+      }
+   }
+
+   @media only screen and (max-width: 800px) {
+      .content {
+         padding: 0 0 2.4rem 0;
+         width: calc(100% - 3.2rem);
+      }
+   }
+
+   @media only screen and (max-width: 480px) {
+      .content {
+         padding: 0 0 2.4rem 0;
+         width: calc(100% - 1.6rem);
+      }
+   }
+</style>

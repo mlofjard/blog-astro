@@ -1,0 +1,182 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<script>
+   import {
+      create,
+      Orama,
+      search,
+      ProvidedTypes,
+      insertMultiple,
+   } from "@orama/orama";
+   import { prettyDate } from "../../utils/misc";
+
+   interface DBSchema extends ProvidedTypes {
+      title: "string";
+      dateTime: "string";
+      theme: "string";
+      path: "string";
+      content: "string";
+   }
+
+   class QueryController extends HTMLElement {
+      constructor() {
+         super();
+         const params = new URLSearchParams(window.location.search);
+         const query = params.get("q");
+
+         if (query) {
+            document
+               .querySelector("input.search")
+               ?.setAttribute("value", query);
+            this.search(query);
+         }
+      }
+
+      async db(): Promise<Orama<DBSchema>> {
+         const db = await create({
+            schema: {
+               title: "string",
+               dateTime: "string",
+               theme: "string",
+               path: "string",
+               content: "string",
+            },
+         });
+
+         const index = await fetch("/search-index.json").then((result) =>
+            result.json()
+         );
+
+         await insertMultiple(db, index.posts);
+
+         return db;
+      }
+
+      async search(query: string) {
+         const db = await this.db();
+         const results = await search(db, {
+            term: query,
+            properties: ["content", "title"],
+         });
+
+         console.log(results);
+
+         this.innerHTML = results.hits
+            .map(
+               (post, idx) => `<a href="${post.document.path}"}>
+            <h3>${post.document.title} | ${prettyDate(
+                  post.document.dateTime
+               )}</h3>
+            <span class="excerpt">${post.document.content.substring(
+               0,
+               800
+            )}</span>
+         </a>`
+            )
+            .join("");
+      }
+   }
+
+   customElements.define("query-controller", QueryController);
+</script>
+
+<Layout title={`Search results`}>
+   <div class="title">Search results</div>
+   <div class="container">
+      <form action="/search">
+         <div class="wrapper">
+            <input name="q" type="text" class="search" placeholder="Search" />
+         </div>
+      </form>
+      <div class="list">
+         <query-controller></query-controller>
+      </div>
+   </div>
+</Layout>
+
+<style lang="scss">
+   .container {
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      padding: 0;
+      gap: 4rem;
+      container-type: inline-size;
+
+      background: rgba(40, 40, 40, 0.8);
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      padding: 3.2rem 3.2rem 4rem 3.2rem;
+      border-radius: 1.6rem;
+      color: rgba(225, 225, 225, 1);
+      line-height: 1.6;
+      font-size: 1.6rem;
+      margin-top: 2.4rem;
+
+      form {
+         align-self: center;
+      }
+
+      .wrapper {
+         position: relative;
+         .search {
+            padding: 1.6rem 2.4rem;
+            border-radius: 4rem;
+            position: relative;
+         }
+         &::after {
+            position: absolute;
+            right: 1.6rem;
+            top: .2rem;
+            color: rgb(80,80,80);
+            opacity: .4;
+            content: "search";
+            font-family: "Material Symbols Rounded";
+            font-size: 3rem;
+         }
+      }
+   }
+
+   .title {
+      font-family: "Oswald";
+      font-weight: 400;
+      font-size: 4rem;
+      line-height: 4rem;
+      color: rgb(205, 205, 205);
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      text-align: center;
+   }
+
+   query-controller {
+      display: flex;
+      flex-direction: column;
+      gap: 1.6rem;
+
+      :global(a) {
+         text-decoration: none;
+         color: rgb(225, 225, 225);
+
+         &:hover {
+            text-decoration: underline;
+         }
+      }
+
+      :global(h3) {
+         font-weight: 600;
+      }
+
+      :global(.excerpt) {
+         text-overflow: ellipsis;
+         -webkit-line-clamp: 3;
+         display: -webkit-box;
+         -webkit-box-orient: vertical;
+         overflow: hidden;
+         word-wrap: break-word;
+         font-size: 1.4rem;
+         font-style: italic;
+         font-weight: 400;
+      }
+   }
+</style>

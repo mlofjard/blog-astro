@@ -1,0 +1,117 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Source code">
+   <div class="container">
+      <h1>Source code</h1>
+      <p>
+         The source code for this blog is currently available at GitHub.
+      </p>
+
+      <a target="_blank" href="https://www.github.com/mlofjard/blog-astro">https://www.github.com/mlofjard/blog-astro</a>
+   </div>
+</Layout>
+
+<style lang="scss">
+   .container {
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      padding: 0;
+      gap: 0rem;
+      container-type: inline-size;
+
+      background: rgba(40, 40, 40, 0.8);
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      padding: 3.2rem 3.2rem 4rem 3.2rem;
+      border-radius: 1.6rem;
+      color: rgb(225, 225, 225);
+      line-height: 1.6;
+      font-size: 1.6rem;
+      margin-top: 2.4rem;
+
+      > *:first-child {
+         margin-top: 0;
+      }
+
+      h1 {
+         font-family: "Oswald", sans-serif;
+         font-size: 3.2rem;
+         color: rgb(205, 205, 205);
+         text-transform: uppercase;
+         margin-top: 3.2rem;
+         margin-bottom: 1.6rem;
+         line-height: 1;
+
+         &::first-letter {
+            font-size: 120%;
+         }
+      }
+
+      h2 {
+         font-family: "Oswald", sans-serif;
+         font-size: 2.4rem;
+         color: rgb(205, 205, 205);
+         text-transform: uppercase;
+         margin-top: 3.2rem;
+         margin-bottom: 1.6rem;
+         line-height: 1;
+
+         &::first-letter {
+            font-size: 120%;
+         }
+      }
+
+      p {
+         margin-top: 0.8rem;
+      }
+
+      blockquote {
+         border: 0.1rem solid rgba(80,80,80,0.8);
+         border-radius: 0.8rem;
+         font-family: "Open Sans", sans-serif;
+         font-weight: 400;
+         font-size: 1.6rem;
+         font-style: italic;
+         background: rgba(80,80,80,0.2);
+         display: block;
+         padding: 1.6rem 1.6rem 1.6rem 8rem;
+         margin: 2.4rem auto 2.4rem auto;
+         max-width: 55rem;
+         position: relative;
+         quotes: '"' '\00BB' '\201E' '\201C';
+
+         &::before {
+            font-family: "Fira Code", sans-serif;
+            font-weight: 400;
+            display: block;
+            content: open-quote;
+            font-size: 12rem;
+            line-height: 1;
+            position: absolute;
+            left: -1.6rem;
+            top: -2.4rem;
+            color: #dadfce;
+         }
+
+         &::after {
+            content: no-close-quote;
+         }
+
+         cite {
+            font-family: "Open Sans", sans-serif;
+            font-weight: 400;
+            font-style: italic;
+            color: rgb(140,140,140);
+            font-size: 1.4rem;
+            display: block;
+            margin-top: .8rem;
+
+            &::before {
+               content: "\2014 \2009";
+            }
+         }
+      }
+   }
+</style>

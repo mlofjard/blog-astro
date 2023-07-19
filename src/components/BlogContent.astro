@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+export interface Props {
+   item: CollectionEntry<"blog">;
+}
+
+const { item } = Astro.props;
+const { Content } = await item.render();
+---
+
+<div class="md-content">
+   <Content />
+</div>
+
+<style lang="scss">
+   @import "../styles/variables.scss";
+
+   .md-content {
+      > :global(*:first-child) {
+         margin-top: 0;
+      }
+
+      :global(a) {
+         color: rgb(0, 180, 180);
+      }
+
+      :global(h2) {
+         font-family: "Oswald", sans-serif;
+         font-size: 3.2rem;
+         color: rgba(205, 205, 205, 1);
+         text-transform: uppercase;
+         margin-top: 3.2rem;
+         margin-bottom: 1.6rem;
+         line-height: 1;
+
+         &::first-letter {
+            font-size: 120%;
+         }
+      }
+
+      :global(p) {
+         margin-top: 0.8rem;
+      }
+
+      :global(ul) {
+         margin: 0.8rem 0 0 2.4rem;
+         list-style-type: none;
+      }
+
+      :global(ol) {
+         margin: 0.8rem 0 0 2.4rem;
+         list-style-type: decimal;
+      }
+
+      :global(li) {
+         &::before {
+            content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+            color: rgb(0, 180, 180); /* Change the color */
+            font-weight: bold; /* If you want it to be bold */
+            display: inline-block; /* Needed to add space between the bullet and the text */
+            width: 1em; /* Also needed for space (tweak if needed) */
+            margin-left: -1em; /* Also needed for space (tweak if needed) */
+         }
+      }
+
+      :global(img) {
+         max-width: 49rem;
+         width: 100%;
+      }
+
+      :global(.astro-code) {
+         font-family: "Fira Code", monospace;
+         font-size: 1.4rem;
+         font-weight: 400;
+         padding: 1.6rem;
+         margin-top: .8rem;
+
+         :global(code) {
+            padding: 0;
+            background: inherit;
+         }
+      }
+
+      :global(code) {
+         font-family: "Fira Code", monospace;
+         font-size: 1.4rem;
+         font-weight: 400;
+         padding: .2rem .4rem;
+         background: rgba(0,0,0,.2)
+      }
+   }
+</style>

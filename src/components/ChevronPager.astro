@@ -1,0 +1,86 @@
+---
+export interface Props {
+   title: string;
+   nextUrl: string | undefined;
+   prevUrl: string | undefined;
+}
+
+const { title, nextUrl, prevUrl } = Astro.props;
+---
+
+<div class="container">
+   {
+      prevUrl ? (
+         <a href={prevUrl}>
+            <span class="icon">chevron_left</span>
+         </a>
+      ) : (
+         <span class="icon">chevron_left</span>
+      )
+   }
+   <span class="title">{title}</span>
+   {
+      nextUrl ? (
+         <a href={nextUrl}>
+            <span class="icon">chevron_right</span>
+         </a>
+      ) : (
+         <span class="icon">chevron_right</span>
+      )
+   }
+</div>
+
+<style lang="scss">
+   @use "../styles/variables.scss" as *;
+
+   .container {
+      margin: 0 auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 1.6rem;
+
+      .title {
+         font-family: "Oswald";
+         font-weight: 400;
+         font-size: 4rem;
+         line-height: 4rem;
+         color: rgb(205, 205, 205);
+         filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      }
+
+      .icon {
+         color: rgb(205, 205, 205);
+         font-family: "Material Symbols Rounded";
+         font-feature-settings: "liga";
+         font-weight: normal;
+         font-style: normal;
+         font-size: 6rem;
+         opacity: 0.3;
+         display: inline-block;
+         line-height: 1;
+         text-transform: none;
+         letter-spacing: normal;
+         word-wrap: normal;
+         white-space: nowrap;
+         direction: ltr;
+         -webkit-font-feature-settings: "liga";
+         -webkit-font-smoothing: antialiased;
+
+         filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+        }
+
+      a {
+         .icon {
+            opacity: 1;
+            transition: all 0.2s linear;
+         }
+
+         &:hover > .icon {
+            color: rgb(225, 225, 225);
+            scale: 1.2;
+         }
+      }
+   }
+</style>

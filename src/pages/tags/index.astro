@@ -1,0 +1,88 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("blog", ({ data }) => {
+   return data.draft !== true;
+});
+const allTags = allPosts.map((post) => post.data.tags).flat();
+const tagMap = allTags.reduce(
+   (acc, e) => acc.set(e, (acc.get(e) || 0) + 1),
+   new Map<string, number>()
+);
+
+const tagMapSorted = [...tagMap.entries()].sort((a, b) => b[1] - a[1]);
+const tagMapDistrib = Array
+        .from(tagMapSorted.keys())
+        .sort((a, b) => b % 2 - a % 2 || (a % 2 ? b - a : a - b))
+        .map(i => tagMapSorted[i]!);
+
+const minSize = 12;
+const maxSize = 58;
+
+const minOcc = Math.min(...tagMap.values());
+const maxOcc = Math.max(...tagMap.values());
+
+var countDiff = Math.log(maxOcc) - Math.log(minOcc);
+var sizeDiff = maxSize - minSize;
+if (countDiff == 0) countDiff = 1; // no divide by zero
+
+const getSize = (occ: number) => {
+   var weight = (Math.log(occ) - Math.log(minOcc)) / countDiff;
+   var size = minSize + Math.round(sizeDiff * weight);
+
+   return size;
+};
+---
+
+<Layout title="Tag cloud">
+   <div class="container">
+      {
+         tagMapDistrib.map((entry) => {
+            const size = getSize(entry[1]);
+            
+            return (
+               <a href={`/tags/${entry[0]}`}
+                  class:list={["tag", size < 20 ? "small" : "large"]}
+                  style={`font-size: ${size}px`}
+               >
+                  {entry[0]}
+               </a>
+            );
+         })
+      }
+   </div>
+</Layout>
+
+<style lang="scss">
+   .container {
+      max-width: 80rem;
+      margin: 0 auto;
+      text-align: center;
+   }
+   .tag {
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      font-family: "Oswald", sans-serif;
+      font-weight: 400;
+      color: rgba(205, 205, 205, 1);
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      padding: 0.8rem 1.2rem;
+
+      &::first-letter {
+         font-size: 120%;
+      }
+
+      &.small {
+         font-family: "Open Sans";
+         color: rgb(225,225,225);
+         font-weight: 600;
+      }
+
+      &:hover {
+         color: rgb(225,225,225);
+         text-decoration: underline;
+      }
+   }
+</style>

@@ -1,0 +1,213 @@
+---
+---
+
+<nav class="menu">
+   <ul>
+      <li class="blog">
+         <span>Blog <span class="icon">expand_more</span></span>
+         <ul>
+            <li class="code"><a href="/topic/code">Code</a></li>
+            <li class="life"><a href="/topic/life">Life</a></li>
+            <li class="fun"><a href="/topic/fun">Fun</a></li>
+         </ul>
+      </li>
+      <li class="find">
+         <span>Find <span class="icon">expand_more</span></span>
+         <ul>
+            <li class="tags"><a href="/tags">Tag cloud</a></li>
+            <li class="search"><a href="/search">Free-text search</a></li>
+            <li class="archive"><a href="/archive">Archive</a></li>
+         </ul>
+      </li>
+      <li class="source"><a href="/source">Source</a></li>
+      <li class="about"><a href="/about">About</a></li>
+   </ul>
+</nav>
+
+<style lang="scss">
+   @use "../styles/variables.scss" as *;
+
+   .icon {
+      font-family: "Material Symbols Rounded";
+      font-size: 1.6rem;
+      vertical-align: bottom;
+   }
+
+   nav.menu {
+      margin-bottom: 2.4rem;
+      position: sticky;
+      top: 0;
+      left: 0;
+      //background-image: linear-gradient(0deg, #1b1b1b 0%, $color-dark 100%);
+      background: rgba(40, 40, 40, 0.8);
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      z-index: 1;
+
+      > ul {
+         display: flex;
+
+         > li {
+            display: block;
+            position: relative;
+            margin: 0;
+            padding: 0;
+
+            > a,
+            > span {
+               display: inline-block;
+               height: 3rem;
+               text-decoration: none;
+               padding: 0 1.6rem;
+               margin: 0;
+               font-weight: 600;
+               color: $color-white;
+               text-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.4);
+               
+               text-transform: uppercase;
+               font-size: 1.2rem;
+               line-height: 3rem;
+               background-image: linear-gradient(
+                  0deg,
+                  #000 100%,
+                  transparent 100%
+               );
+               background-position: left 0 bottom -2.4rem;
+               background-repeat: no-repeat;
+               transition: background-position 300ms ease-in-out,
+                  color 300ms ease-in-out;
+
+               &::first-letter {
+                  font-size: 1.6rem;
+               }
+            }
+
+            > ul {
+               background-color: rgba(40, 40, 40, 0.8);
+               position: absolute;
+               top: 3rem;
+               border-bottom-left-radius: 0.4rem;
+               border-bottom-right-radius: 0.4rem;
+               margin: 0;
+               font-size: 1.6rem;
+               padding: 0;
+               visibility: hidden;
+               opacity: 0;
+               transition: all 300ms ease-in-out;
+               width: 15rem;
+               overflow: hidden;
+
+               > li {
+                  > a {
+                     display: block;
+                     height: 3rem;
+                     text-decoration: none;
+                     padding: 0 1.6rem;
+                     margin: 0;
+                     font-weight: 600;
+                     color: $color-white;
+                     text-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.4);
+                     text-transform: uppercase;
+                     font-size: 1.2rem;
+                     line-height: 3rem;
+                     background-image: linear-gradient(
+                        90deg,
+                        rgb(0, 0, 0) 100%,
+                        transparent 100%
+                     );
+                     background-position: left -14.4rem bottom 0;
+                     background-repeat: no-repeat;
+                     transition: background-position 300ms ease-in-out,
+                        color 300ms ease-in-out;
+
+                     &::first-letter {
+                        font-size: 1.6rem;
+                     }
+                  }
+
+                  &:hover {
+                     > a {
+                        background-position: left 0 bottom 0;
+                     }
+                  }
+               }
+            }
+
+            &:hover {
+               > a,
+               > span {
+                  background-position: left 0 bottom 0;
+               }
+
+               > ul {
+                  visibility: visible;
+                  opacity: 1;
+               }
+            }
+         }
+
+         > li.blog {
+            > ul > li > a {
+               background-image: linear-gradient(
+                  90deg,
+                  rgb(0, 140, 140) 100%,
+                  transparent 100%
+               );
+            }
+
+            > span {
+               background-image: linear-gradient(
+                  0deg,
+                  rgb(0, 140, 140) 100%,
+                  transparent 100%
+               );
+            }
+         }
+
+         > li.find {
+            > ul > li > a {
+               background-image: linear-gradient(
+                  90deg,
+                  rgb(120, 40, 120) 100%,
+                  transparent 100%
+               );
+            }
+
+            > span {
+               background-image: linear-gradient(
+                  0deg,
+                  rgb(120, 40, 120) 100%,
+                  transparent 100%
+               );
+
+               &:hover {
+                  //color: $color-dark;
+               }
+            }
+         }
+
+         > li.source > a {
+            background-image: linear-gradient(
+               0deg,
+               $color-red 100%,
+               transparent 100%
+            );
+         }
+
+         > li.about > a {
+            background-image: linear-gradient(
+               0deg,
+               rgb(120, 120, 120) 100%,
+               transparent 100%
+            );
+
+            &:hover {
+               // color: $color-dark;
+            }
+         }
+      }
+   }
+</style>

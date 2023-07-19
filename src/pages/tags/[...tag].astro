@@ -1,0 +1,71 @@
+---
+import ArticleList from "../../components/ArticleList.astro";
+import Layout from "../../layouts/Layout.astro";
+import { CollectionEntry, getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+   const allPosts = await getCollection("blog", ({ data }) => {
+      return data.draft !== true;
+   });
+   allPosts.sort((a, b) => a.data.dateTime < b.data.dateTime ? 1 : -1)
+
+   const uniqueTags = [
+      ...new Set(allPosts.map((post) => post.data.tags).flat()),
+   ];
+
+   return uniqueTags.map((tag) => {
+      const filteredPosts = allPosts.filter((post) =>
+         post.data.tags.includes(tag)
+      );
+      return {
+         params: { tag },
+         props: { tag, articles: filteredPosts },
+      };
+   });
+}
+
+interface Props {
+   tag: string;
+   articles: CollectionEntry<"blog">[];
+}
+
+const { tag, articles } = Astro.props;
+---
+
+<Layout title={`Tag #${tag}`}>
+   <div class="title">Tag #{tag}</div>
+   <div class="container">
+      <ArticleList articles={articles} withDate={true} />
+   </div>
+</Layout>
+
+<style lang="scss">
+   .container {
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      padding: 0;
+      gap: 4rem;
+      container-type: inline-size;
+
+      background: rgba(40, 40, 40, 0.8);
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      padding: 3.2rem 3.2rem 4rem 3.2rem;
+      border-radius: 1.6rem;
+      color: rgba(225, 225, 225, 1);
+      line-height: 1.6;
+      font-size: 1.6rem;
+      margin-top: 2.4rem;
+
+   }
+   .title {
+      font-family: "Oswald";
+      font-weight: 400;
+      font-size: 4rem;
+      line-height: 4rem;
+      color: rgb(205, 205, 205);
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      text-align: center;
+   }
+</style>

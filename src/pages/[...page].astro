@@ -1,0 +1,84 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ArticleComponent from "../components/Article.astro"
+import type { PagedArticleList } from "../types/article";
+import Pager from "../components/Pager.astro";
+import { CollectionEntry, getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+   const fetchedArticles = await getCollection("blog", ({ data }) => {
+      return data.draft !== true;
+   });
+   fetchedArticles.sort((a, b) => a.data.dateTime < b.data.dateTime ? 1 : -1)
+   const pagedArticles: PagedArticleList = [];
+   let pageCount = -1;
+   let articleCount = 0;
+   for (const item of fetchedArticles) {
+      if (articleCount % 10 == 0) {
+         pageCount++;
+         pagedArticles.push({ page: pageCount, articles: [] });
+      }
+      pagedArticles[pageCount]!.articles.push(item);
+      articleCount++;
+   }
+
+   return pagedArticles
+      .map((articlePage) => {
+         return {
+            params: { page: `page/${articlePage.page}` },
+            props: {
+               articles: articlePage.articles,
+               page: articlePage.page,
+               last: articlePage.page == pageCount,
+            },
+         };
+      })
+      .concat([
+         {
+            params: { page: undefined as unknown as string },
+            props: {
+               articles: pagedArticles[0]!.articles,
+               page: 0,
+               last: false,
+            },
+         },
+      ]);
+}
+
+interface Props {
+   articles: CollectionEntry<"blog">[];
+   page: number;
+   last: boolean;
+}
+
+const { articles, page, last } = Astro.props;
+---
+
+<Layout>
+   <section class="article-list">
+      {
+         articles.map((article) => (
+            <ArticleComponent item={article} titleLink={true} />
+         ))
+      }
+   </section>
+   <Pager
+      firstPage={page === 0}
+      lastPage={last}
+      nextUrl={`/page/${page + 1}`}
+      nextTitle="Older posts"
+      prevUrl={`/page/${page - 1}`}
+      prevTitle="Newer posts"
+   />
+</Layout>
+
+<style lang="scss">
+   section.article-list {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      gap: 4rem;
+      container-type: inline-size;
+   }
+</style>

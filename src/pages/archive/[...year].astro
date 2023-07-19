@@ -1,0 +1,159 @@
+---
+import ChevronPager from "../../components/ChevronPager.astro";
+import Layout from "../../layouts/Layout.astro";
+import { CollectionEntry, getCollection } from "astro:content";
+import { getDayName, getMonthName } from "../../utils/misc";
+import ArticleList from "../../components/ArticleList.astro";
+
+export async function getStaticPaths() {
+   const fetchedArticles = await getCollection("blog", ({ data }) => {
+      return data.draft !== true;
+   });
+   fetchedArticles.sort((a, b) => (a.data.dateTime < b.data.dateTime ? 1 : -1));
+
+   const yearMap = fetchedArticles.reduce((acc, e) => {
+      const year = e.data.dateTime.getFullYear().toString();
+      return acc.set(year, (acc.get(year) || []).concat(e));
+   }, new Map<string, CollectionEntry<"blog">[]>());
+
+   const allYears = [...yearMap.entries()];
+
+   return allYears
+      .map((entry, i) => {
+         return {
+            params: { year: entry[0] },
+            props: {
+               articles: entry[1],
+               year: entry[0],
+               prevYear: i === 0 ? undefined : allYears[i - 1]![0],
+               nextYear:
+                  i === allYears.length - 1 ? undefined : allYears[i + 1]![0],
+            },
+         };
+      })
+      .concat([
+         {
+            params: { year: undefined as unknown as string },
+            props: {
+               articles: allYears[0]![1],
+               year: allYears[0]![0],
+               prevYear: undefined,
+               nextYear: allYears.length > 1 ? allYears[1]![0] : undefined,
+            },
+         },
+      ]);
+}
+
+interface Props {
+   articles: CollectionEntry<"blog">[];
+   year: string;
+   nextYear: string | undefined;
+   prevYear: string | undefined;
+}
+
+const { articles, year, nextYear, prevYear } = Astro.props;
+
+const monthMap = [
+   ...articles
+      .reduce((acc, e) => {
+         const month = e.data.dateTime.getMonth().toString();
+         const date = e.data.dateTime.getDate().toString();
+         const innerMap =
+            acc.get(month) || new Map<string, CollectionEntry<"blog">[]>();
+         const dateMap = innerMap.set(
+            date,
+            (innerMap.get(date) || []).concat(e)
+         );
+         return acc.set(month, dateMap);
+      }, new Map<string, Map<string, CollectionEntry<"blog">[]>>())
+      .entries(),
+];
+
+const nextUrl = nextYear ? `/archive/${nextYear}` : undefined;
+const prevUrl = prevYear ? `/archive/${prevYear}` : undefined;
+---
+
+<Layout title={`Archive ${year}`}>
+   <ChevronPager title={year} nextUrl={nextUrl} prevUrl={prevUrl} />
+   <div class="container">
+      {
+         monthMap.map((month) => (
+            <div class="month">
+               <h2>{getMonthName(month[0])}</h2>
+               {[...month[1].entries()].map((day) => (
+                  <div class="day">
+                     <div class="number">
+                        <span class="dayName">
+                           {getDayName(day[1][0]!.data.dateTime)}
+                        </span>
+                        <span class="dayNumber">{day[0]}</span>
+                     </div>
+                     <ArticleList articles={day[1]} />
+                  </div>
+               ))}
+            </div>
+         ))
+      }
+   </div>
+</Layout>
+
+<style lang="scss">
+   .container {
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      padding: 0;
+      gap: 4rem;
+      container-type: inline-size;
+      margin-top: 2.4rem;
+
+      background: rgba(40, 40, 40, 0.8);
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+      padding: 3.2rem 3.2rem 4rem 3.2rem;
+      border-radius: 1.6rem;
+      color: rgba(225, 225, 225, 1);
+      line-height: 1.6;
+      font-size: 1.6rem;
+
+      .month {
+         display: flex;
+         flex-direction: column;
+         gap: 1.6rem;
+
+         h2 {
+            font-family: "Oswald";
+            font-size: 3.2rem;
+         }
+
+         .day {
+            display: flex;
+            flex-direction: row;
+            gap: 2.4rem;
+
+            .number {
+               display: flex;
+               flex: 0 0 10rem;
+               flex-direction: column;
+               text-align: center;
+
+               .dayName {
+                  color: rgb(225, 225, 225);
+                  background-color: rgb(140, 0, 0);
+                  font-size: 1.4rem;
+                  font-weight: 600;
+                  font-family: "Open Sans";
+                  padding: 0.2rem 0.8rem;
+                  border-top-left-radius: 0.4rem;
+                  border-top-right-radius: 0.4rem;
+               }
+
+               .dayNumber {
+                  font-size: 4rem;
+                  font-family: "Oswald";
+               }
+            }
+         }
+      }
+   }
+</style>

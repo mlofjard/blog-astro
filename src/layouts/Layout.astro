@@ -46,7 +46,7 @@ const pageTitle = title ? `${title} - ${mainTitle}` : `${mainTitle} - ${subTitle
    <head>
       <meta charset="UTF-8" />
       <meta name="description" content="Astro description" />
-      <meta name="viewport" content="width=414, shrink-to-fit=yes, initial-scale=1" />
+      <meta name="viewport" content="width=device-width, shrink-to-fit=yes" />
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       <meta name="generator" content={Astro.generator} />
       <title>{pageTitle}</title>
@@ -100,6 +100,7 @@ const pageTitle = title ? `${title} - ${mainTitle}` : `${mainTitle} - ${subTitle
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      min-width: 414px;
       align-items: center;
    }
 
@@ -246,6 +247,12 @@ const pageTitle = title ? `${title} - ${mainTitle}` : `${mainTitle} - ${subTitle
       .content {
          padding: 0 0 2.4rem 0;
          width: calc(100% - 1.6rem);
+      }
+   }
+
+   @media only screen and (max-width: 413px) {
+      .container {
+         min-height: 200vh;
       }
    }
 </style>

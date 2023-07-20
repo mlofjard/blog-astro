@@ -61,29 +61,31 @@ import Layout from "../../layouts/Layout.astro";
             properties: ["content", "title"],
          });
 
-         console.log(results);
-
-         this.innerHTML = results.hits
-            .map(
-               (post, idx) => `<a href="${post.document.path}"}>
-            <h3>${post.document.title} | ${prettyDate(
-                  post.document.dateTime
-               )}</h3>
-            <span class="excerpt">${post.document.content.substring(
+         if (results.count === 0) {
+            this.innerHTML = "No blog posts found";
+         } else {
+            this.innerHTML = results.hits
+               .map(
+                  (hit) => `<a href="${hit.document.path}"}>
+            <h3>${hit.document.title} | ${prettyDate(
+                     hit.document.dateTime
+                  )}</h3>
+            <span class="excerpt">${hit.document.content.substring(
                0,
                800
             )}</span>
          </a>`
-            )
-            .join("");
+               )
+               .join("");
+         }
       }
    }
 
    customElements.define("query-controller", QueryController);
 </script>
 
-<Layout title={`Search results`}>
-   <div class="title">Search results</div>
+<Layout title={`Free-text search`}>
+   <div class="title">Free-text search</div>
    <div class="container">
       <form action="/search">
          <div class="wrapper">
@@ -113,7 +115,7 @@ import Layout from "../../layouts/Layout.astro";
       color: rgba(225, 225, 225, 1);
       line-height: 1.6;
       font-size: 1.6rem;
-      margin-top: 2.4rem;
+      margin-top: 3.2rem;
 
       form {
          align-self: center;
@@ -122,16 +124,21 @@ import Layout from "../../layouts/Layout.astro";
       .wrapper {
          position: relative;
          .search {
-            padding: 1.6rem 2.4rem;
-            border-radius: 4rem;
+            padding: 0 2.4rem;
+            font-family: "Open Sans";
+            font-size: 1.6rem;
+            border-radius: 2.4rem;
             position: relative;
+            height: 4.8rem;
+            border: none;
+            background: rgb(225, 225, 225);
          }
          &::after {
             position: absolute;
             right: 1.6rem;
-            top: .2rem;
-            color: rgb(80,80,80);
-            opacity: .4;
+            line-height: 4.8rem;
+            color: rgb(80, 80, 80);
+            opacity: 0.4;
             content: "search";
             font-family: "Material Symbols Rounded";
             font-size: 3rem;
@@ -147,6 +154,12 @@ import Layout from "../../layouts/Layout.astro";
       color: rgb(205, 205, 205);
       filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
       text-align: center;
+      text-transform: uppercase;
+      margin-top: 0.8rem;
+
+      &::first-letter {
+         font-size: 120%;
+      }
    }
 
    query-controller {

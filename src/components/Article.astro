@@ -4,15 +4,15 @@ import type { CollectionEntry } from "astro:content";
 import BlogContent from "./BlogContent.astro";
 
 export interface Props {
-   item: CollectionEntry<"blog">;
-   titleLink?: boolean;
+  item: CollectionEntry<"blog">;
+  titleLink?: boolean;
 }
 
 const getTheme = (theme: string) => {
-   if (theme === "code" || theme === "life" || theme === "fun") {
-      return theme;
-   }
-   return "life";
+  if (theme === "code" || theme === "life" || theme === "fun") {
+    return theme;
+  }
+  return "life";
 };
 
 const { item, titleLink } = Astro.props;
@@ -21,15 +21,15 @@ const postUrl = `/post/${item.slug}`;
 ---
 
 <script>
-   class ShareButton extends HTMLElement {
+  class ShareButton extends HTMLElement {
     constructor() {
       super();
 
       // Read the message from the data attribute.
       const title = this.dataset.title!;
       const slug = this.dataset.slug!;
-      const link = this.querySelector('a');
-      link!.addEventListener('click', (e) => {
+      const link = this.querySelector("a");
+      link!.addEventListener("click", (e) => {
         this.share(e, title, slug);
       });
     }
@@ -37,173 +37,174 @@ const postUrl = `/post/${item.slug}`;
     share = (e: MouseEvent, title: string, slug: string) => {
       e.preventDefault();
       if (navigator.share) {
-         navigator
-            .share({
-               title: document.title,
-               text: title,
-               url: `${window.location.origin}/post/${slug}`,
-            })
-            .then(() => console.log("Successful share"))
-            .catch((error) => console.log("Error sharing:", error));
+        navigator
+          .share({
+            title: document.title,
+            text: title,
+            url: `${window.location.origin}/post/${slug}`,
+          })
+          .then(() => console.log("Successful share"))
+          .catch((error) => console.log("Error sharing:", error));
       } else {
-         const dialog = document.querySelector("#share-dialog") as HTMLDialogElement;
-         const code = dialog.querySelector("code");
-         code!.innerHTML = `${window.location.origin}/post/${slug}`;
-         dialog.showModal();
+        const dialog = document.querySelector(
+          "#share-dialog",
+        ) as HTMLDialogElement;
+        const code = dialog.querySelector("code");
+        code!.innerHTML = `${window.location.origin}/post/${slug}`;
+        dialog.showModal();
       }
-   };
-
+    };
   }
 
-  customElements.define('share-button', ShareButton);
+  customElements.define("share-button", ShareButton);
 </script>
 
 <article class={theme}>
-   <header>
-      <time datetime={item.data.dateTime.toISOString()}
-         >{prettyDate(item.data.dateTime.toISOString())}</time
+  <header>
+    <time datetime={item.data.dateTime.toISOString()}
+      >{prettyDate(item.data.dateTime.toISOString())}</time
+    >
+    {
+      titleLink && (
+        <h1>
+          <a href={postUrl} set:html={item.data.title} />
+        </h1>
+      )
+    }
+    {!titleLink && <h1 set:html={item.data.title} />}
+  </header>
+  <div class="wrapper">
+    <div class="content">
+      <BlogContent item={item} />
+      <footer>by {item.data.author}</footer>
+    </div>
+    <aside>
+      <a href={`${postUrl}#comments`}><span class="symbols">chat</span></a>
+      <share-button data-slug={item.slug} data-title={item.data.title}
+        ><a href="#" class="share"><span class="symbols">share</span></a
+        ></share-button
       >
-      {
-         titleLink && (
-            <h1>
-               <a href={postUrl} set:html={item.data.title} />
-            </h1>
-         )
-      }
-      {!titleLink && <h1 set:html={item.data.title} />}
-   </header>
-   <div class="wrapper">
-      <div class="content">
-         <BlogContent item={item} />
-         <footer>by {item.data.author}</footer>
-      </div>
-      <aside>
-         <a href={`${postUrl}#comments`}><span class="symbols">chat</span></a>
-         <share-button data-slug={item.slug} data-title={item.data.title}
-            ><a href="#" class="share"><span class="symbols">share</span></a
-            ></share-button
-         >
-      </aside>
-   </div>
-   <!-- <ShareDialog bind:dialog url={fullUrl} /> -->
+    </aside>
+  </div>
+  <!-- <ShareDialog bind:dialog url={fullUrl} /> -->
 </article>
 
 <style lang="scss">
-   @import "../styles/variables.scss";
+  @import "../styles/variables.scss";
 
-   article {
+  article {
+    display: flex;
+    flex-direction: column;
+    max-width: 120rem;
+    width: 100%;
+
+    header {
+      padding: 0 0 0.8rem 1.6rem;
+      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+
+      h1 {
+        margin: 0 0 0.8rem 0;
+        font-family: "Oswald", sans-serif;
+        font-size: 4.8rem;
+        color: rgba(205, 205, 205, 1);
+        text-transform: uppercase;
+
+        &::first-letter {
+          font-size: 120%;
+        }
+
+        a {
+          text-decoration: none;
+          color: inherit;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+
+    footer,
+    header time {
+      color: rgba(225, 225, 225, 1);
+      font-size: 1.2rem;
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: right;
+    }
+
+    .wrapper {
       display: flex;
-      flex-direction: column;
-      max-width: 120rem;
-      width: 100%;
+      flex-direction: row;
 
-      header {
-         padding: 0 0 0.8rem 1.6rem;
-         filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
-
-         h1 {
-            margin: 0 0 0.8rem 0;
-            font-family: "Oswald", sans-serif;
-            font-size: 4.8rem;
-            color: rgba(205, 205, 205, 1);
-            text-transform: uppercase;
-
-            &::first-letter {
-               font-size: 120%;
-            }
-
-            a {
-               text-decoration: none;
-               color: inherit;
-
-               &:hover {
-                  text-decoration: underline;
-               }
-            }
-         }
+      .content {
+        flex: 1 1 100%;
+        background: rgba(40, 40, 40, 0.8);
+        filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+        padding: 3.2rem 3.2rem 4rem 3.2rem;
+        border-radius: 1.6rem;
+        color: rgba(225, 225, 225, 1);
+        line-height: 1.6;
+        font-size: 1.6rem;
+        width: 10px;
       }
 
-      footer,
-      header time {
-         color: rgba(225, 225, 225, 1);
-         font-size: 1.2rem;
-         font-style: italic;
-         font-weight: 600;
-      }
+      aside {
+        flex: 1 0 fit-content;
+        margin: 0.8rem 0 0 0.8rem;
+        gap: 0.8rem;
+        display: flex;
+        flex-direction: column;
 
-      footer {
-         text-align: right;
-      }
+        a {
+          display: block;
+          text-decoration: none;
+          color: rgba(225, 225, 225, 1);
+          filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
 
+          span.symbols {
+            font-size: 4rem;
+          }
+        }
+      }
+    }
+
+    .symbols {
+      font-family: "Material Symbols Rounded";
+      font-feature-settings: "liga";
+      font-weight: normal;
+      font-style: normal;
+      font-size: 2.4rem;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-feature-settings: "liga";
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @container (max-width: 450px) {
       .wrapper {
-         display: flex;
-         flex-direction: row;
+        flex-direction: column;
 
-         .content {
-            flex: 1 1 100%;
-            background: rgba(40, 40, 40, 0.8);
-            filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
-            padding: 3.2rem 3.2rem 4rem 3.2rem;
-            border-radius: 1.6rem;
-            color: rgba(225, 225, 225, 1);
-            line-height: 1.6;
-            font-size: 1.6rem;
-            width: 10px;
-         }
+        .content {
+          width: unset;
+        }
 
-         aside {
-            flex: 1 0 fit-content;
-            margin: 0.8rem 0 0 0.8rem;
-            gap: 0.8rem;
-            display: flex;
-            flex-direction: column;
+        aside {
+          flex-direction: row;
 
-            a {
-               display: block;
-               text-decoration: none;
-               color: rgba(225, 225, 225, 1);
-               filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
-
-               span.symbols {
-                  font-size: 4rem;
-               }
-            }
-         }
+          a span.symbols {
+            font-size: 4rem;
+          }
+        }
       }
-
-      .symbols {
-         font-family: "Material Symbols Rounded";
-         font-feature-settings: "liga";
-         font-weight: normal;
-         font-style: normal;
-         font-size: 2.4rem;
-         display: inline-block;
-         line-height: 1;
-         text-transform: none;
-         letter-spacing: normal;
-         word-wrap: normal;
-         white-space: nowrap;
-         direction: ltr;
-         -webkit-font-feature-settings: "liga";
-         -webkit-font-smoothing: antialiased;
-      }
-
-      @container (max-width: 450px) {
-         .wrapper {
-            flex-direction: column;
-
-            .content {
-               width: unset;
-            }
-
-            aside {
-               flex-direction: row;
-
-               a span.symbols {
-                  font-size: 4rem;
-               }
-            }
-         }
-      }
-   }
+    }
+  }
 </style>

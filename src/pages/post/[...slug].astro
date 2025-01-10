@@ -4,50 +4,54 @@ import ArticleComponent from "../../components/Article.astro";
 import { CollectionEntry, getCollection } from "astro:content";
 
 export async function getStaticPaths() {
-   const fetchedArticles = await getCollection("blog", ({ data }) => {
-      return data.draft !== true;
-   });
-   return fetchedArticles.map((article) => {
-      return {
-         params: { slug: article.slug },
-         props: { article },
-      };
-   });
+  const isDev = import.meta.env.DEV;
+  const fetchedArticles = await getCollection("blog", ({ data }) => {
+    if (isDev) {
+      return true;
+    }
+    return data.draft !== true;
+  });
+  return fetchedArticles.map((article) => {
+    return {
+      params: { slug: article.slug },
+      props: { article },
+    };
+  });
 }
 
 interface Props {
-   article: CollectionEntry<"blog">;
+  article: CollectionEntry<"blog">;
 }
 
 const { article } = Astro.props;
 ---
 
 <Layout title={article.data.title}>
-   <div class="container">
-      <ArticleComponent item={article} />
-      <div class="comments" id="comments">
-         I'm sorry, but comments are not implemented yet.
-      </div>
-   </div>
+  <div class="container">
+    <ArticleComponent item={article} />
+    <div class="comments" id="comments">
+      I'm sorry, but comments are not implemented yet.
+    </div>
+  </div>
 </Layout>
 
 <style lang="scss">
-   .container {
-      min-width: 200px;
-      display: flex;
-      flex-direction: column;
-      margin: 0 auto;
-      padding: 0;
-      gap: 4rem;
-      container-type: inline-size;
-   }
+  .container {
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 0;
+    gap: 4rem;
+    container-type: inline-size;
+  }
 
-   .comments {
-      font-family: "Open Sans";
-      font-size: 2.4rem;
-      filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
-      color: rgb(225,225,225);
-      text-align: center;
-      margin-bottom: 3.2rem;
-   }
+  .comments {
+    font-family: "Open Sans";
+    font-size: 2.4rem;
+    filter: drop-shadow(0 0.2rem 0.2rem rgba(0, 0, 0, 0.4));
+    color: rgb(225, 225, 225);
+    text-align: center;
+    margin-bottom: 3.2rem;
+  }
 </style>
